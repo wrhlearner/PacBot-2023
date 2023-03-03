@@ -265,3 +265,20 @@ refer to arena design in [Github public design](https://github.com/HarvardURC/Pa
 
 ### **2.5 Time Schedule**
 
+- Week 1: Mar 6 - Mar 12
+- Week 2: Mar 12 - Mar 19
+- Week 3: Mar 19 - Mar 26
+
+Hardware prototype ddl
+
+- Week 4: Mar 26 - Apr 2
+- Week 5: Apr 2 - Apr 9
+
+Running PacMan ddl
+
+- Week 6: Apr 9 - Apr 16
+- Week 7: Apr 16 - Apr 23
+
+Testing ddl
+
+Competition: Apr 23
