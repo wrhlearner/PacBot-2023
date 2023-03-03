@@ -14,7 +14,7 @@
 
 ### **2.1 Game Rule**
 
-- [Pacman game](https://pacman-30thanniversary.com/)
+- [Pacman game](https://freepacman.org/)
 
 - **arena**
 
@@ -126,11 +126,79 @@ past robot design: /Pacbot/docs
     - no Xbee communication
     - have Python API
 
-- **default: Harvard sample tool chain**
+- **default: Harvard sample hardware**
+
+  - [electrical](https://docs.google.com/spreadsheets/d/1ZO9OBoGcNkOdx6GaBkAFo6AWodeVCOaCXKic-0er2z0/edit?usp=sharing)
+
+  | components                            | quantity with spares | link                                                         |
+  | ------------------------------------- | -------------------- | ------------------------------------------------------------ |
+  | 3D Printed Materials                  | 1                    |                                                              |
+  | Pololu 60mm Wheel set (yellow)        | 2                    | https://www.pololu.com/product/1422                          |
+  | 1/2 in. Ball Caster (metal)           | 3                    | https://www.pololu.com/product/953                           |
+  | IR Sensor                             | 8                    | https://www.pololu.com/product/2489                          |
+  | Magnetic encoder pair                 | 2                    | https://www.pololu.com/product/3081                          |
+  | DC Gear Motors                        | 4                    | https://www.pololu.com/product/2381                          |
+  | Gearmotor Bracket                     | 2                    | https://www.pololu.com/product/989                           |
+  | Li-Po Battery                         | 3                    | https://hobbyking.com/de_de/turnigy-1000mah-2s-20c-lipo-pack.html |
+  | Motor Driver                          | 4                    | https://www.pololu.com/product/2135                          |
+  | Voltage Regulator                     | 3                    | https://www.pololu.com/product/2851                          |
+  | Diodes                                | 5                    | https://www.digikey.com/product-detail/en/MM3Z3V3B/MM3Z3V3BCT-ND/1626881 |
+  | Power Transistors                     | 5                    | https://www.digikey.com/product-detail/en/MMBTA06LT1G/MMBTA06LT1GOSCT-ND/1139832 |
+  | SMD LEDs                              | 25                   | https://www.digikey.com/product-detail/en/LTST-C190KSKT/160-1437-1-ND/386818 |
+  | Slide Switch                          | 2                    |                                                              |
+  | Assorted capacitors, resistors, wires | 1                    |                                                              |
+  | IMU                                   | 1                    | https://www.adafruit.com/product/2472                        |
+  | Raspberry Pi 0 W                      | 3                    | https://www.raspberrypi.org/products/raspberry-pi-zero-w/    |
+  | Teensy 3.5                            | 2                    | https://www.pjrc.com/store/teensy32.html                     |
+  | PCB: KiCAD                            | 3                    |                                                              |
+
+  - Raspberry Pi Zero W
+    - **802.11 b/g/n wireless LAN** WiFi
+    - Bluetooth 4.1
+    - Bluetooth Low Energy (BLE)
+    - **1GHz, single-core CPU**
+    - **512MB RAM**
+    - Mini HDMI port and micro USB On-The-Go (OTG) port
+    - Micro USB power
+    - HAT-compatible 40-pin header
+    - Composite video and reset headers
+    - CSI camera connector
+
+  - hierarchy
+    - **3 PCB**: KiCAD, connecting all components
+      - **microcontroller**
+        - 3 raspberry Pi Zero W: run robot code using data from sensors (IR and Teensy); interface with the motors and IR sensors; receive instruction from host (high level code run on a remote computer, not on raspberry pi)
+
+      - **power supply**
+        - 3 Li-Po battery
+        - 3 voltage regulator
+
+      - **sensors**: PID control
+        - 2 Teensy 3.5: receive magnetic encoder and IMU readings. Communicate these sensor data with raspberry pi via serial communication.
+          - 2 magnetic encoder pair: track the amount of distance we travel.
+          - 1 IMU: An IMU was intended to be used for general navigation of the robot (to ensure we don't hit walls and turn accurately - other uses are possible)
+        - 8 IR sensors: IR sensors are used for detecting whether we are near walls. These are placed on the sides and the front/back of the bot
+
+      - <font color='red'>**motors**</font>
+        - 4 motor driver: A motor driver is necessary to communicate with the motors from the Raspberry Pi
+          - 4 DC gear motors: 6V brushed DC gear motors
+
+    - **Mechanical**: SolidWorks
+      - 1 3D Printed Materials
+      - 2 60mm wheel set
+      - 1/2'' ball caster
+
+    - **others**
+      - 2 gearmotor bracket
+      - 5 diodes
+      - 5 power transistors
+      - 25 SMD LEDs
+      - 2 slide switch
+      - 1 assorted caps, res, wires
 
 - **UCLA micromouse sample**
 
-- 
+> reference:
 
 - components
 
@@ -142,6 +210,14 @@ past robot design: /Pacbot/docs
     | STM32       | STM32CubeIDE<br />STM32CubeMX<br />GCC<br />ST-LINK Debugger |      |                |            |      |              |       |        |
     | Arduino     |                                                              |      |                |            |      |              |       |        |
 
+    Types of Microcontrollers
+
+    | Microncontroller | RAM  | ROM  | clock rate | supply power | interfaces |
+    | ---------------- | ---- | ---- | ---------- | ------------ | ---------- |
+    |                  |      |      |            |              |            |
+    |                  |      |      |            |              |            |
+    |                  |      |      |            |              |            |
+
   - power supply
 
   - motor
@@ -150,29 +226,42 @@ past robot design: /Pacbot/docs
 
   - reinforcement learning (RL) deployment
 
+#### **2.3.3 Test env - Arena design**
+
+refer to arena design in [Github public design](https://github.com/HarvardURC/Pacbot/tree/master/docs/Arena%20Documentation)
+
+- design tools: SolidWorks
+
 ### **2.4 Software Code Base**
 
 [Github Repo](https://github.com/HarvardURC/Pacbot)
 
 
 
-#### **2.4.1 Pacman Game Code**
+#### **2.4.1 Pacman Game Code - host**
 
 /Pacbot/src/gameEngine
 
 
 
-#### **2.4.2 Bot Code**
+#### **2.4.2 Bot Code - PacBot**
 
 /Pacbot/src/botCode
 
 
 
-#### **2.4.3 Communication**
+#### **2.4.3 server**
+
+
+
+#### **2.4.4 Communication**
 
 /Pacbot/docs
 
+[How to run the game and connect to your bot - A Guide](https://github.com/HarvardURC/Pacbot/blob/master/docs/A%20Guide%20to%20Connecting%20to%20the%20Game.md)
 
+- 1 server, 1 host, 1 robot
+- how does robot receive game status? server -> host -> robot via WIFI
 
 ### **2.5 Time Schedule**
 
