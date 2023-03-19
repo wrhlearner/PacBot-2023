@@ -1,0 +1,15 @@
+Change Component Footprint: Designator=U7 Old Footprint=61300611121 New Footprint=61300611121
+Change Component Footprint: Designator=U9 Old Footprint=61300611121 New Footprint=61300611121
+Add Pin To Net: Unknown Pin: Pin U7-GND
+Add Pin To Net: Unknown Pin: Pin U7-M1
+Add Pin To Net: Unknown Pin: Pin U7-M2
+Add Pin To Net: Unknown Pin: Pin U7-OUTA
+Add Pin To Net: Unknown Pin: Pin U7-OUTB
+Add Pin To Net: Unknown Pin: Pin U7-VCC
+Add Pin To Net: Unknown Pin: Pin U9-GND
+Add Pin To Net: Unknown Pin: Pin U9-M1
+Add Pin To Net: Unknown Pin: Pin U9-M2
+Add Pin To Net: Unknown Pin: Pin U9-OUTA
+Add Pin To Net: Unknown Pin: Pin U9-OUTB
+Add Pin To Net: Unknown Pin: Pin U9-VCC
+Added Member To Class: ClassName=PacBot Member=Component C5 1UF CAP
