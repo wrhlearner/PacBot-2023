@@ -62,7 +62,33 @@
 >
 > - [EasyEDA](https://easyeda.com/)
 
+3.1 Build Design Library
 
+
+
+3.1.1 create schematic symbol
+
+3.1.2 create PCB footprint
+
+3.1.3 bind and create 3D model for footprint
+
+3.1.4 find components in libraries
+
+3.2 Schematic Simulation
+
+3.2.1 create schematic
+
+3.2.2 Simulation library
+
+3.2.3 LTSpice simulation
+
+3.3 make PCB prototype
+
+3.3.1 PCB layout
+
+3.3.2 PCB ordering
+
+3.3.3 PCB soldering and testing
 
 ## **4 PCB Design and Ordering**
 
@@ -76,7 +102,7 @@
 >
 > - [JLCPCB](https://jlcpcb.com/)
 
-### **4.1 PCB Design**
+### **4.1 PCB Layout**
 
 
 
@@ -90,7 +116,7 @@
 
 ## **Tool Chain**
 
-- Schematic design
+- EasyEDA
 
 ## **Reference**
 
