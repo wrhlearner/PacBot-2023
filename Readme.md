@@ -1,9 +1,5 @@
 # **Schedule**
 
-## **Problem to fix**
-
-Cannot connect motor encoder component pins to other components in PCB routing.
-
 ## **Directions**
 
 - Hardware: 
