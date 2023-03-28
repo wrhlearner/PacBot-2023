@@ -1,28 +1,12 @@
-Output: ODB++ Files
-Type  : ODB
-From  : Variant [[No Variations]] of Project [PacBot.PrjPcb]
-   Generated File[profile]
-   Generated File[stephdr]
-   Generated File[features]
-   Generated File[features]
-   Generated File[features]
-   Generated File[tools]
-   Generated File[features]
-   Generated File[features]
-   Generated File[features]
-   Generated File[features]
-   Generated File[features]
-   Generated File[features]
-   Generated File[features]
-   Generated File[features]
-   Generated File[components]
-   Generated File[data]
-   Generated File[netlist]
-   Generated File[matrix]
-   Generated File[PacBot.REP]
+Output: NC Drill Files
+Type  : NC Drill
+From  : Project [PacBot.PrjPcb]
+   Generated File[PacBot.TXT]
+   Generated File[PacBot.LDP]
+   Generated File[PacBot.DRR]
 
 
-Files Generated   : 19
+Files Generated   : 3
 Documents Printed : 0
 
-Finished Output Generation At 3:54:13 On 2023/3/19
+Finished Output Generation At 21:55:17 On 2023/3/27
