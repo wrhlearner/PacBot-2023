@@ -1,5 +1,9 @@
 # **Schedule**
 
+## **Raspberry Pi**
+username: pacbot
+password: pacbot
+
 ## **Directions**
 
 - Hardware: 
