@@ -29,7 +29,8 @@ def bfs(grid, start, target, max_dist=float("inf")):
 
     return None
 
-def a_star(grid, 
+def a_star(state,
+           grid, 
            start, 
            pellet_eaten, 
            ghost_node_current, 
@@ -287,18 +288,18 @@ def get_path(parents, current):
     return total_path
 
 
-def best_nodes(scores, frontier, k):
+def best_nodes(scores, visited, k):
     """
     Inputs: 
         Scores: dictionary mapping scores to nodes {(x,y):int}
         Visited: list of nodes that have been visited
     Output:
-        min_key: node (x,y) that has biggest value in the frontier
+        min_key: node (x,y) that has biggest value in the visited
     
     """
     max_val = np.inf
-    max_node = frontier[0]
-    for node in frontier:
+    max_node = visited[0]
+    for node in visited:
         val = scores[node]
         if val < max_val:
             max_node = node
@@ -314,3 +315,13 @@ def grid_distance(grid,a,b):
     """
 
     return bfs(grid, a, b)
+
+def get_ghost_positions(state):
+    """
+    Input:
+        state: lightState
+    Output:
+        List of {x: int, y: int, state: AgentState}
+    """
+    
+    return [(ghost.x, ghost.y) for ghost in [state.red_ghost, state.blue_ghost, state.orange_ghost, state.pink_ghost]]
