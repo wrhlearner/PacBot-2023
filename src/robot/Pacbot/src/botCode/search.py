@@ -159,22 +159,24 @@ def done_search(grid, goal_nodes, start, max_step_amount):
 
     """
 
-    unexplored_nodes = [n for n in goal_nodes]
-
     # Perform BFS to walk through all nodes at distance `max_step_amount` from start
     queue = [(start, 0)] # (node, distance) 
+    bfs_explored_nodes = [] # list of nodes that have been explored by the BFS algorithm used to check if all nodes have been explored
 
-    while len(queue) > 0 and len(unexplored_nodes) > 0:
+    while len(queue) > 0:
         node, node_distance = queue.pop(0)
-        if node in unexplored_nodes:
-            unexplored_nodes.remove(node)
+        if node not in goal_nodes:
+            return False # we have not explored this node
         
         if node_distance < max_step_amount:
             neighbours = get_neighbours(grid, node)
             for n in neighbours:
-                queue.append((n, node_distance + 1))
+                if n not in bfs_explored_nodes:
+                    queue.append((n, node_distance + 1))
 
-    return len(unexplored_nodes) == 0
+        bfs_explored_nodes.append(node)
+
+    return True
 
 
 def get_neighbours(grid, current_node):
