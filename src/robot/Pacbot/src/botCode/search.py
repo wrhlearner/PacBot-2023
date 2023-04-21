@@ -29,7 +29,8 @@ def bfs(grid, start, target, max_dist=float("inf")):
 
     return None
 
-def a_star(grid, 
+def a_star(state,
+           grid, 
            start, 
            pellet_eaten, 
            ghost_node_current, 
@@ -158,22 +159,24 @@ def done_search(grid, goal_nodes, start, max_step_amount):
 
     """
 
-    unexplored_nodes = [n for n in goal_nodes]
-
     # Perform BFS to walk through all nodes at distance `max_step_amount` from start
     queue = [(start, 0)] # (node, distance) 
+    bfs_explored_nodes = [] # list of nodes that have been explored by the BFS algorithm used to check if all nodes have been explored
 
-    while len(queue) > 0 and len(unexplored_nodes) > 0:
+    while len(queue) > 0:
         node, node_distance = queue.pop(0)
-        if node in unexplored_nodes:
-            unexplored_nodes.remove(node)
+        if node not in goal_nodes:
+            return False # we have not explored this node
         
         if node_distance < max_step_amount:
             neighbours = get_neighbours(grid, node)
             for n in neighbours:
-                queue.append((n, node_distance + 1))
+                if n not in bfs_explored_nodes:
+                    queue.append((n, node_distance + 1))
 
-    return len(unexplored_nodes) == 0
+        bfs_explored_nodes.append(node)
+
+    return True
 
 
 def get_neighbours(grid, current_node):
@@ -291,18 +294,18 @@ def get_path(parents, current):
     return total_path
 
 
-def best_nodes(scores, frontier, k):
+def best_nodes(scores, visited, k):
     """
     Inputs: 
         Scores: dictionary mapping scores to nodes {(x,y):int}
         Visited: list of nodes that have been visited
     Output:
-        min_key: node (x,y) that has biggest value in the frontier
+        min_key: node (x,y) that has biggest value in the visited
     
     """
     max_val = np.inf
-    max_node = frontier[0]
-    for node in frontier:
+    max_node = visited[0]
+    for node in visited:
         val = scores[node]
         if val < max_val:
             max_node = node
@@ -324,11 +327,11 @@ def grid_distance(grid,a:int,b:list(int)):
     return len(bfs(grid, a, b))
 
 
-def get_ghost_locations():
+def get_ghost_locations(state):
     """
 
     returns location of 4 ghosts in (x,y) coords.
     If ghost doesn't exist return (None, None)
     """
-
-    return
+    
+    return [(ghost.x, ghost.y) for ghost in [state.red_ghost, state.blue_ghost, state.orange_ghost, state.pink_ghost]]
