@@ -124,7 +124,7 @@ def do_a_star(grid, scores, start, max_step_amount):
 
 
             # i) if successor is the goal, stop search
-            if done_search(explored, start):
+            if done_search(grid, explored, start, max_step_amount):
                 #pick the best goal state
                 best_goal_state = best_nodes(scores, goal_states)
                 return parents, best_goal_state
@@ -147,11 +147,29 @@ def do_a_star(grid, scores, start, max_step_amount):
             frontier.append(n)
 
 
-def done_search(goal_nodes, start):
+def done_search(grid, goal_nodes, start, max_step_amount):
     """
     returns True if all the nodes of a certain distance have been explored 
-
+    goal_nodes is a list of explored nodes in (x, y) format. 
+    start is the starting node in (x, y) format
     """
+
+    unexplored_nodes = [n for n in goal_nodes]
+
+    # Perform BFS to walk through all nodes at distance `max_step_amount` from start
+    queue = [(start, 0)] # (node, distance) 
+
+    while len(queue) > 0 and len(unexplored_nodes) > 0:
+        node, node_distance = queue.pop(0)
+        if node in unexplored_nodes:
+            unexplored_nodes.remove(node)
+        
+        if node_distance < max_step_amount:
+            neighbours = get_neighbours(grid, node)
+            for n in neighbours:
+                queue.append((n, node_distance + 1))
+
+    return len(unexplored_nodes) == 0
 
 
 def get_neighbours(grid, current_node):
