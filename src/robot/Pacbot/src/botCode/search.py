@@ -37,17 +37,13 @@ def a_star(grid,
            max_dist=float("inf"),
            max_duration=1000):
     """
-    Grid
+    Grid: grid
     Start: Node with (x, y) value
     Parents: dictionary mapping a parent node to its child (x,y):(a,b)
     Scores: dictionary mapping scores to nodes {(x,y):int}
 
     
     """
-    
-    path  = [(start, [])]
-    frontier = []
-
 
     pellet_value = 10
     ghost_constant = 100
