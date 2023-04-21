@@ -36,6 +36,7 @@ class BasicHighLevelModule(rm.ProtoModule):
     def msg_received(self, msg, msg_type):
         if msg_type == MsgType.LIGHT_STATE:
             self.state = msg
+            print("State set to "+str(self.state))
 
     def tick(self):
         if self.state and self.state.mode == LightState.RUNNING:
@@ -44,8 +45,9 @@ class BasicHighLevelModule(rm.ProtoModule):
             # update game state
             if self.grid[p_loc[0]][p_loc[1]] in [o, O]:
                 self.grid[p_loc[0]][p_loc[1]] = e
- 
-            path = bfs(self.grid, p_loc, self.state, [o, O])
+
+            # path = bfs(self.grid, p_loc, self.state, [o, O]) # ORIGINAL
+            path = bfs(self.grid, p_loc, [o, O]) # NEW
             print(path)
 
             if path != None:
