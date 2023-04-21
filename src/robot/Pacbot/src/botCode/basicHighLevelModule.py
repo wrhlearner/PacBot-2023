@@ -45,6 +45,7 @@ class BasicHighLevelModule(rm.ProtoModule):
             if self.grid[p_loc[0]][p_loc[1]] in [o, O]:
                 self.grid[p_loc[0]][p_loc[1]] = e
  
+                        #grid, start, target, max_dist=float("inf")
             path = bfs(self.grid, p_loc, self.state, [o, O])
             print(path)
 
