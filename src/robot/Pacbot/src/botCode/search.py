@@ -86,7 +86,7 @@ def evaluate_grid(grid, start, pellet_eaten,
 
     for node in grid:
         #set reward 
-        reward = reward_between_points(start, node,ghost_constant, pellet_eaten)
+        reward = reward_between_points(grid, start, node,ghost_constant, pellet_eaten)
         scores[node] = reward
 
     #evaluate parents
@@ -124,7 +124,7 @@ def do_a_star(grid, scores, start, max_step_amount):
                 best_goal_state = best_nodes(scores, goal_states)
                 return parents, best_goal_state
             
-            distance = grid_distance(current_node, start)
+            distance = grid_distance(grid, current_node, start)
 
             #add to goal state if past a certain set of steps from current 
             if (distance == max_step_amount):
@@ -209,8 +209,20 @@ def get_neighbours(grid, current_node):
     return neighbours
 
 
-def ghost_value(distance, constant):
-    return -constant*distance
+def ghost_value(distances, constant):
+    """
+    Returns the heuristic updated value from the distance of the ghost from the node we want to get
+    Input:
+        Distance: List of distances from all 4 ghosts. Infinity of the ghosts are not on the grid 
+        Constant: Positive constant that multiplies how close our node is to the ghost.
+    Output: Sum of all ghost values 
+    NOTE: Edit this if we are having issues with heuristic, because it should be explonential probably
+    """
+    path = 0
+    for d in distances:
+        path += d
+
+    return -constant* (60-d)
 
 # def update_heuristic_values(start, last_start,
 #                 pellet_eaten, 
@@ -238,7 +250,7 @@ def ghost_value(distance, constant):
 
 
 
-def reward_between_points(a, b, ghost_constant, b_has_pellet, pellet_value, ghosts):
+def reward_between_points(grid, a, b, ghost_constant, b_has_pellet, pellet_value, ghosts):
     """
     Inputs:
         a: Node with (x, y) value
@@ -246,10 +258,11 @@ def reward_between_points(a, b, ghost_constant, b_has_pellet, pellet_value, ghos
     Output:
         Value: int reward value for path between nodes
     """
-    #distance of point from ghost 
-    #if node has a reward on ti
-    distances = grid_distance(a, ghosts)
-    val = ghost_value(distances, ghost_constant)
+    ghost_distances = []
+    for g in ghosts:
+        distance = grid_distance(grid, a, g)
+        ghost_distances.append(distance)
+    val = ghost_value(ghost_distances, ghost_constant)
     if b_has_pellet:
         val += pellet_value
     return val 
@@ -293,10 +306,11 @@ def best_nodes(scores, frontier, k):
     return max_node
 
 
-def grid_distance(a,b):
+def grid_distance(grid,a,b):
     """
     b is a list of n values, grid disnace returns the same n values
 
 
     """
-    return a-b
+
+    return bfs(grid, a, b)
