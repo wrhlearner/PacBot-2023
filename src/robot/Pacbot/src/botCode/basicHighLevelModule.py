@@ -4,7 +4,7 @@ import os, copy
 import robomodules as rm
 from variables import *
 from grid import grid
-from search import bfs
+from search import bfs, get_ghost_positions
 from messages import MsgType, message_buffers, LightState, PacmanCommand
 
 ADDRESS = os.environ.get("LOCAL_ADDRESS","localhost")
@@ -32,11 +32,9 @@ class BasicHighLevelModule(rm.ProtoModule):
             else:
                 return PacmanCommand.WEST
 
-
     def msg_received(self, msg, msg_type):
         if msg_type == MsgType.LIGHT_STATE:
             self.state = msg
-            print("State set to "+str(self.state))
 
     def tick(self):
         if self.state and self.state.mode == LightState.RUNNING:
