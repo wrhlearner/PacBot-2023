@@ -38,8 +38,8 @@ def a_star(state,
            max_dist=float("inf"),
            max_duration=1000):
     """
+    Grid
     Start: Node with (x, y) value
-    Goal: Node with (x,y) value
     Parents: dictionary mapping a parent node to its child (x,y):(a,b)
     Scores: dictionary mapping scores to nodes {(x,y):int}
 
@@ -78,17 +78,20 @@ def a_star(state,
     return path, start, ghost_node_current, h_scores #in order to update them the next time around
 
 
-def evaluate_grid(grid, start, pellet_eaten, 
-                    ghost_nodes_past, ghost_node_current, 
+def evaluate_grid(grid, pellet_eaten, 
                     scores, 
                     pellet_value, ghost_constant):
     #preform A* search
     #we are going to assign a value to all the nodes on this grid and assign it  
 
-    for node in grid:
+    ghosts = get_ghost_locations()
+
+    for x in range(30):
+        for y in range(30):
         #set reward 
-        reward = reward_between_points(grid, start, node,ghost_constant, pellet_eaten)
-        scores[node] = reward
+            reward = reward_between_points(grid, (x,y), ghost_constant, pellet_eaten,
+                                           pellet_value, ghosts)
+            scores[(x,y)] = reward
 
     #evaluate parents
 
@@ -251,20 +254,27 @@ def ghost_value(distances, constant):
 
 
 
-def reward_between_points(grid, a, b, ghost_constant, b_has_pellet, pellet_value, ghosts):
+def reward_between_points(grid, a:tuple, ghost_constant:int, has_pellet:bool,
+                           pellet_value:int, ghosts:list(tuple)):
     """
     Inputs:
+        grid: the grid's current state
         a: Node with (x, y) value
-        b: Node with (x,y) value
+        ghost constant: integer what we multiply by ghost values
+        has_pellet: bool that 
+        
     Output:
         Value: int reward value for path between nodes
     """
     ghost_distances = []
     for g in ghosts:
-        distance = grid_distance(grid, a, g)
+        if g[0] == None:
+            distance = 60
+        else:
+            distance = grid_distance(grid, a, g)
         ghost_distances.append(distance)
     val = ghost_value(ghost_distances, ghost_constant)
-    if b_has_pellet:
+    if has_pellet:
         val += pellet_value
     return val 
 
@@ -307,21 +317,25 @@ def best_nodes(scores, visited, k):
     return max_node
 
 
-def grid_distance(grid,a,b):
-    """
-    b is a list of n values, grid disnace returns the same n values
-
-
-    """
-
-    return bfs(grid, a, b)
-
-def get_ghost_positions(state):
+def grid_distance(grid,a:int,b:list(int)):
     """
     Input:
-        state: lightState
-    Output:
-        List of {x: int, y: int, state: AgentState}
+        Grid: 30x30 grid
+        a: node (x,y)
+        b: list of nodes [(x,y), (x1,y1)] of which we the num of the distances 
+    Returns:
+        int: 
+
+    """
+
+    return len(bfs(grid, a, b))
+
+
+def get_ghost_locations(state):
+    """
+
+    returns location of 4 ghosts in (x,y) coords.
+    If ghost doesn't exist return (None, None)
     """
     
     return [(ghost.x, ghost.y) for ghost in [state.red_ghost, state.blue_ghost, state.orange_ghost, state.pink_ghost]]
