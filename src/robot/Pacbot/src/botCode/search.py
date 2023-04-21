@@ -31,9 +31,6 @@ def bfs(grid, start, target, max_dist=float("inf")):
 
 def a_star(grid, 
            start, 
-           last_start,
-           target, 
-           current_path,
            pellet_eaten, 
            ghost_node_current, 
            ghost_nodes_past=None, 
@@ -55,21 +52,21 @@ def a_star(grid,
     pellet_value = 10
     ghost_constant = 100
     
-    if current_path == None:
+    # if current_path == None:
         # first every node gets assigned a value based on pellet score and distance from ghost
         # they also get assigmed a parent
-        h_scores = evaluate_grid(grid, start, pellet_eaten, 
+    h_scores = evaluate_grid(grid, start, pellet_eaten, 
                         ghost_nodes_past, ghost_node_current, 
                         h_scores, 
                         pellet_value, ghost_constant)
-    else:
-        h_scores = update_heuristic_values(start, last_start,
-                               pellet_eaten, 
-                               ghost_nodes_past, 
-                               ghost_node_current, 
-                               h_scores, 
-                               pellet_value, 
-                               ghost_constant)
+    # else:
+    #     h_scores = update_heuristic_values(start, last_start,
+    #                            pellet_eaten, 
+    #                            ghost_nodes_past, 
+    #                            ghost_node_current, 
+    #                            h_scores, 
+    #                            pellet_value, 
+    #                            ghost_constant)
 
     parents = do_a_star(grid, h_scores, start)
 
@@ -106,8 +103,6 @@ def do_a_star(grid, scores, start, max_step_amount):
     # with the best value from the certain distance
     goal_states = []
 
-    
-
     while len(frontier) != 0:
         current_node = best_nodes(scores, frontier)
         explored.append(current_node)
@@ -135,23 +130,33 @@ def do_a_star(grid, scores, start, max_step_amount):
             if (distance == max_step_amount):
                 goal_states.append(n)
 
-            # ii) else, compute both g and h for successor.g = q.g + distance between 
-            scores[n] = scores[n] + distance
+            # new score is 
+            new_score = scores[n] + distance + scores[current_node]
 
             #if a node with the same position as successor is
             #  in the OPEN list which has alower f than successor, 
             # skip this successor
 
             if n in explored:
-                prev_cost = 
-            frontier.append(n)
-
+                prev_cost = scores[n]
+                if (new_score > prev_cost):
+                    scores[n] = new_score
+                    frontier.append(n)
+        
+        
+        return parents, best_nodes(scores, goal_states)
 
 def done_search(grid, goal_nodes, start, max_step_amount):
     """
     returns True if all the nodes of a certain distance have been explored 
     goal_nodes is a list of explored nodes in (x, y) format. 
     start is the starting node in (x, y) format
+
+    Input:
+        goal_nodes: list of nodes [(x, y), (x1, y1)]
+        start: node (x,y)
+    returns True if all the nodes of a certain distance have been explored from the start position
+
     """
 
     unexplored_nodes = [n for n in goal_nodes]
@@ -181,38 +186,52 @@ def get_neighbours(grid, current_node):
         List of neighbouring nodes that are not a wall
 
     """
+    neighbours = []
+    x = current_node[0]
+    y = current_node[1]
     
-    return [(1, 1)]
-
+    #up
+    if y-1 >= 0:
+        if grid[x][y-1] != I:
+            neighbours.append((x, y-1))
+    if y+1 <= 29:
+        if grid[x][y+1] != I:
+            neighbours.append((x, y+1))
+    if x-1 >= 0:
+        if grid[x-1][y] != I:
+            neighbours.append((x-1, y))
+    if x+1 <= 29:
+        if grid[x+1][y] != I:
+            neighbours.append((x+1, y))
     
-
+    return neighbours
 
 
 def ghost_value(distance, constant):
     return -constant*distance
 
-def update_heuristic_values(start, last_start,
-                pellet_eaten, 
-                ghost_nodes_past, 
-                ghost_node_current, 
-                scores, 
-                pellet_value, 
-                ghost_constant):
-    """
-    Inputs:
-        Pellet_eaten Node (x,y) of parent that has been eaten. None if nothing has been eaten
-        ghost_nodes_past, List of ghosts and their location Node, none if ghosts are not on grid
-            If any of the ghosts are None just reevaluate ngl
-        Scores: Dicts of Nodes and corresponding scores
-        Pellet_Value: Value of having a pellet so we can subtract
-    Returns: Updated Scores for each node
+# def update_heuristic_values(start, last_start,
+#                 pellet_eaten, 
+#                 ghost_nodes_past, 
+#                 ghost_node_current, 
+#                 scores, 
+#                 pellet_value, 
+#                 ghost_constant):
+#     """
+#     Inputs:
+#         Pellet_eaten Node (x,y) of parent that has been eaten. None if nothing has been eaten
+#         ghost_nodes_past, List of ghosts and their location Node, none if ghosts are not on grid
+#             If any of the ghosts are None just reevaluate ngl
+#         Scores: Dicts of Nodes and corresponding scores
+#         Pellet_Value: Value of having a pellet so we can subtract
+#     Returns: Updated Scores for each node
 
-    THESE JUST RETURN THE HEURISTIC VALUE
-    """
+#     THESE JUST RETURN THE HEURISTIC VALUE
+#     """
 
-    if pellet_eaten is not None:
-        scores[pellet_eaten] -= 10
-    #figure out where each ghot has gone
+#     if pellet_eaten is not None:
+#         scores[pellet_eaten] -= 10
+#     #figure out where each ghot has gone
         
 
 
