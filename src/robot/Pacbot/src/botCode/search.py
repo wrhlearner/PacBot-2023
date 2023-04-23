@@ -94,12 +94,18 @@ def evaluate_grid(grid, state, scores:dict, pellet_constant:int, ghost_constant:
     for x in range(28):
         for y in range(30):
 <<<<<<< HEAD
+<<<<<<< HEAD
         #set reward 
             if grid[x][y] == I:
 =======
             #set reward
             if grid[x][y] == I or grid[x][y] == e or grid[x][y] == n:
 >>>>>>> 4456544c5bd95b46f140f0acc0352de8365b5303
+=======
+            #set reward
+            if grid[x][y] == I or grid[x][y] == e or grid[x][y] == n:
+
+>>>>>>> df5812fb4242f7ce0e9c77b51d0f30055c71fada
                 reward = 0
             else:
                 reward = reward_between_points(grid, (x,y), ghost_constant,
