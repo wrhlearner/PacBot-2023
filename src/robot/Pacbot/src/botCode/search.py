@@ -93,19 +93,9 @@ def evaluate_grid(grid, state, scores:dict, pellet_constant:int, ghost_constant:
 
     for x in range(28):
         for y in range(30):
-<<<<<<< HEAD
-<<<<<<< HEAD
-        #set reward 
-            if grid[x][y] == I:
-=======
-            #set reward
-            if grid[x][y] == I or grid[x][y] == e or grid[x][y] == n:
->>>>>>> 4456544c5bd95b46f140f0acc0352de8365b5303
-=======
-            #set reward
+
             if grid[x][y] == I or grid[x][y] == e or grid[x][y] == n:
 
->>>>>>> df5812fb4242f7ce0e9c77b51d0f30055c71fada
                 reward = 0
             else:
                 reward = reward_between_points(grid, (x,y), ghost_constant,
@@ -136,12 +126,14 @@ def do_a_star(grid, scores:dict, start:tuple, max_step_amount:int, dist_constant
     explored = []
     parents = {}
 
+    distance_incl_scores = {}
+    distance_incl_scores[start] = scores[start]
+
     #we will have a list of goal states and return the goal state 
     # with the best value from the certain distance
     goal_states = []
 
     while len(frontier) != 0:
-        print("begin",frontier)
         current_node = best_nodes(scores, frontier)
         explored.append(current_node)
         
@@ -171,15 +163,15 @@ def do_a_star(grid, scores:dict, start:tuple, max_step_amount:int, dist_constant
             # new score is the prev score of the prev node (heuritsic and actual)
             #plus the heuristic score of the current node
             #minus one because its one more distance away
-            new_score = scores[n] + scores[current_node] - dist_constant
+            new_score = scores[n] + distance_incl_scores[current_node] - dist_constant
 
             #if a node with the same position as successor is
             #  in the OPEN list which has alower f than successor, 
             # skip this successor
 
-            prev_cost = scores[n]
+            prev_cost = distance_incl_scores.get(n, -np.inf)
             if (new_score > prev_cost):
-                scores[n] = new_score
+                distance_incl_scores[n] = new_score
                 frontier.append(n)
                 print(frontier)
         
@@ -198,9 +190,6 @@ def done_search(grid, goal_nodes, start, max_step_amount):
     returns True if all the nodes of a certain distance have been explored from the start position
 
     """
-    if len(goal_nodes) == 0:
-        return False
-
     if len(goal_nodes) == 0:
         return False
 
@@ -297,7 +286,7 @@ def ghost_value(distances, constant):
 
 
 def reward_between_points(grid, a:tuple, ghost_constant:int,
-                           pellet_constant:int, ghosts:list):
+                           pellet_constant:int, ghosts:list(tuple)):
     """
     Inputs:
         grid: the grid's current state
