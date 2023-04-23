@@ -32,34 +32,32 @@ def bfs(grid, start, target, max_dist=float("inf")):
 def a_star(state,
            grid, 
            start, 
-           pellet_eaten, 
-           ghost_node_current, 
-           ghost_nodes_past=None, 
            max_dist=float("inf"),
            max_duration=1000):
     """
-    Grid
-    Start: Node with (x, y) value
-    Parents: dictionary mapping a parent node to its child (x,y):(a,b)
-    Scores: dictionary mapping scores to nodes {(x,y):int}
+    Inputs
+        State: the state
+        Grid: grid
+        Start: Node with (x, y) value
 
-    
+    Output:
+        Path: list of nodes [(x,y), (x,y)]
     """
-    
-    path  = [(start, [])]
-    frontier = []
 
-
-    pellet_value = 10
+    pellet_constant = 10
     ghost_constant = 100
+    dist_constant = 3
+    look_ahead = 5
     
     # if current_path == None:
         # first every node gets assigned a value based on pellet score and distance from ghost
         # they also get assigmed a parent
-    h_scores = evaluate_grid(grid, start, pellet_eaten, 
-                        ghost_nodes_past, ghost_node_current, 
-                        h_scores, 
-                        pellet_value, ghost_constant)
+    h_scores = evaluate_grid(
+                        grid, 
+                        state,
+                        {}, 
+                        pellet_constant, 
+                        ghost_constant)
     # else:
     #     h_scores = update_heuristic_values(start, last_start,
     #                            pellet_eaten, 
@@ -69,28 +67,35 @@ def a_star(state,
     #                            pellet_value, 
     #                            ghost_constant)
 
-    parents = do_a_star(grid, h_scores, start)
+    parents, goal = do_a_star(grid, h_scores, start, look_ahead, dist_constant)
 
     #Search the next x moves for the path with the highest reward
-    path = get_path(parents, start)
+    path = get_path(parents, goal)
 
 
-    return path, start, ghost_node_current, h_scores #in order to update them the next time around
+    return path #in order to update them the next time around
 
 
-def evaluate_grid(grid, pellet_eaten, 
-                    scores, 
-                    pellet_value, ghost_constant):
-    #preform A* search
-    #we are going to assign a value to all the nodes on this grid and assign it  
+def evaluate_grid(grid, state, scores:dict, pellet_constant:int, ghost_constant:int):
+    """
+    Give every node a heuristic value, not including distance from the goal
+    Inputs:
+        grid: the grid and current state
+        state: the state
+        scores: at this point an empty dictionary
+        pellet_constant: int pellet value
+        ghost_constant: int ghost value
+    returns:
+        Scores: dictionary mapping scores to nodes {(x,y):int}
+    """ 
 
-    ghosts = get_ghost_locations()
+    ghosts = get_ghost_locations(state)
 
     for x in range(30):
         for y in range(30):
         #set reward 
-            reward = reward_between_points(grid, (x,y), ghost_constant, pellet_eaten,
-                                           pellet_value, ghosts)
+            reward = reward_between_points(grid, (x,y), ghost_constant,
+                                           pellet_constant, ghosts)
             scores[(x,y)] = reward
 
     #evaluate parents
@@ -98,7 +103,20 @@ def evaluate_grid(grid, pellet_eaten,
     return scores
 
 
-def do_a_star(grid, scores, start, max_step_amount):
+def do_a_star(grid, scores:dict, start:tuple, max_step_amount:int, dist_constant:int):
+    """
+    Inputs:
+        grid:
+        Scores: Dictionary mapping scores to their values
+        Start: Node (x,y) start node
+        max_step_amount: integer looking at the nodes you are looking at 
+        dist_constant: constant subtrated for the distance
+
+    returns:
+        Parents: dictionary mapping a parent node to its child (x,y):(a,b)
+        Goal: Goal Node 
+    """
+
     frontier = [start]
     explored = []
     parents = {}
@@ -134,8 +152,10 @@ def do_a_star(grid, scores, start, max_step_amount):
             if (distance == max_step_amount):
                 goal_states.append(n)
 
-            # new score is 
-            new_score = scores[n] + distance + scores[current_node]
+            # new score is the prev score of the prev node (heuritsic and actual)
+            #plus the heuristic score of the current node
+            #minus one because its one more distance away
+            new_score = scores[n] + scores[current_node] - dist_constant
 
             #if a node with the same position as successor is
             #  in the OPEN list which has alower f than successor, 
@@ -219,7 +239,8 @@ def ghost_value(distances, constant):
     Input:
         Distance: List of distances from all 4 ghosts. Infinity of the ghosts are not on the grid 
         Constant: Positive constant that multiplies how close our node is to the ghost.
-    Output: Sum of all ghost values 
+    Output: 
+        int: Sum of all ghost values 
     NOTE: Edit this if we are having issues with heuristic, because it should be explonential probably
     """
     path = 0
@@ -254,14 +275,15 @@ def ghost_value(distances, constant):
 
 
 
-def reward_between_points(grid, a:tuple, ghost_constant:int, has_pellet:bool,
-                           pellet_value:int, ghosts:list(tuple)):
+def reward_between_points(grid, a:tuple, ghost_constant:int,
+                           pellet_constant:int, ghosts:list(tuple)):
     """
     Inputs:
         grid: the grid's current state
         a: Node with (x, y) value
         ghost constant: integer what we multiply by ghost values
-        has_pellet: bool that 
+        pellet_constant: integer what we multiply by ghost values
+        ghosts: list of ghost locations [(x,y), (x1,y1)]
         
     Output:
         Value: int reward value for path between nodes
@@ -274,8 +296,8 @@ def reward_between_points(grid, a:tuple, ghost_constant:int, has_pellet:bool,
             distance = grid_distance(grid, a, g)
         ghost_distances.append(distance)
     val = ghost_value(ghost_distances, ghost_constant)
-    if has_pellet:
-        val += pellet_value
+    if has_pellet(grid, a):
+        val += pellet_constant
     return val 
 
 
@@ -304,7 +326,7 @@ def best_nodes(scores, visited, k):
         Scores: dictionary mapping scores to nodes {(x,y):int}
         Visited: list of nodes that have been visited
     Output:
-        min_key: node (x,y) that has biggest value in the visited
+        max_node: node (x,y) that has biggest value in the visited
     
     """
     max_val = np.inf
@@ -324,7 +346,7 @@ def grid_distance(grid,a:int,b:list(int)):
         a: node (x,y)
         b: list of nodes [(x,y), (x1,y1)] of which we the num of the distances 
     Returns:
-        int: 
+        int: lenght of shortest path between nodes
 
     """
 
@@ -333,9 +355,27 @@ def grid_distance(grid,a:int,b:list(int)):
 
 def get_ghost_locations(state):
     """
-
-    returns location of 4 ghosts in (x,y) coords.
-    If ghost doesn't exist return (None, None)
+    input:
+        state from messgae
+    output:
+        list of nodes (x,y) for each ghost:
+        location of 4 ghosts in (x,y) coords.
+        If ghost doesn't exist return (None, None)
     """
     
     return [(ghost.x, ghost.y) for ghost in [state.red_ghost, state.blue_ghost, state.orange_ghost, state.pink_ghost]]
+
+def has_pellet(grid, node):
+    """
+    Inputr
+        Grid
+        Node: (x,y)
+    Output:
+        True is has pellet False otherwise
+    
+    """
+    x= node[0]
+    y= node[1]
+    if grid[x][y] == o or grid[x][y] == O:
+        return True
+    return False

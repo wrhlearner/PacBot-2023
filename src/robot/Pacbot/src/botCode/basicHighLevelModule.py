@@ -4,7 +4,7 @@ import os, copy
 import robomodules as rm
 from variables import *
 from grid import grid
-from search import bfs, get_ghost_positions
+from search import bfs, get_ghost_positions, a_star
 from messages import MsgType, message_buffers, LightState, PacmanCommand
 
 ADDRESS = os.environ.get("LOCAL_ADDRESS","localhost")
@@ -46,6 +46,7 @@ class BasicHighLevelModule(rm.ProtoModule):
 
             # path = bfs(self.grid, p_loc, self.state, [o, O]) # ORIGINAL
             path = bfs(self.grid, p_loc, [o, O]) # NEW
+            path = a_star(self.state, self.grid)
             print(path)
 
             if path != None:
