@@ -91,10 +91,15 @@ def evaluate_grid(grid, state, scores:dict, pellet_constant:int, ghost_constant:
 
     ghosts = get_ghost_locations(state)
 
-    for x in range(30):
+    for x in range(28):
         for y in range(30):
+<<<<<<< HEAD
         #set reward 
             if grid[x][y] == I:
+=======
+            #set reward
+            if grid[x][y] == I or grid[x][y] == e or grid[x][y] == n:
+>>>>>>> 4456544c5bd95b46f140f0acc0352de8365b5303
                 reward = 0
             else:
                 reward = reward_between_points(grid, (x,y), ghost_constant,
@@ -130,6 +135,7 @@ def do_a_star(grid, scores:dict, start:tuple, max_step_amount:int, dist_constant
     goal_states = []
 
     while len(frontier) != 0:
+        print("begin",frontier)
         current_node = best_nodes(scores, frontier)
         explored.append(current_node)
         
@@ -165,14 +171,14 @@ def do_a_star(grid, scores:dict, start:tuple, max_step_amount:int, dist_constant
             #  in the OPEN list which has alower f than successor, 
             # skip this successor
 
-            if n in explored:
-                prev_cost = scores[n]
-                if (new_score > prev_cost):
-                    scores[n] = new_score
-                    frontier.append(n)
+            prev_cost = scores[n]
+            if (new_score > prev_cost):
+                scores[n] = new_score
+                frontier.append(n)
+                print(frontier)
         
         
-        return parents, best_nodes(scores, goal_states)
+    return parents, best_nodes(scores, goal_states)
 
 def done_search(grid, goal_nodes, start, max_step_amount):
     """
@@ -186,6 +192,9 @@ def done_search(grid, goal_nodes, start, max_step_amount):
     returns True if all the nodes of a certain distance have been explored from the start position
 
     """
+    if len(goal_nodes) == 0:
+        return False
+
     if len(goal_nodes) == 0:
         return False
 
@@ -282,7 +291,7 @@ def ghost_value(distances, constant):
 
 
 def reward_between_points(grid, a:tuple, ghost_constant:int,
-                           pellet_constant:int, ghosts:list(tuple)):
+                           pellet_constant:int, ghosts:list):
     """
     Inputs:
         grid: the grid's current state
@@ -296,7 +305,7 @@ def reward_between_points(grid, a:tuple, ghost_constant:int,
     """
     ghost_distances = []
     for g in ghosts:
-        if g[0] == None:
+        if g[0] == None or grid[g[0]][g[1]] == n:
             distance = 60
         else:
             distance = grid_distance(grid, a, g)
@@ -326,7 +335,7 @@ def get_path(parents, current):
     return total_path
 
 
-def best_nodes(scores, visited, k):
+def best_nodes(scores, visited):
     """
     Inputs: 
         Scores: dictionary mapping scores to nodes {(x,y):int}
@@ -345,7 +354,7 @@ def best_nodes(scores, visited, k):
     return max_node
 
 
-def grid_distance(grid,a:int,b:list(int)):
+def grid_distance(grid,a:int,b:list):
     """
     Input:
         Grid: 30x30 grid
