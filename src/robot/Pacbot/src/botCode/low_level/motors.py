@@ -32,21 +32,26 @@ class Motors:
         self.teensy_sensors = TeensySensors()
         sleep(2)
         
-        self.ir_sensors = Sensors([pins.tof_front,pins.tof_rear,pins.tof_fleft,pins.tof_fright,pins.tof_rleft,pins.tof_rright], ["front", "rear","fleft","fright","rleft","rright"], [0x30,0x31,0x32,0x33,0x34,0x35])
+        #self.ir_sensors = Sensors([pins.tof_front,pins.tof_rear,pins.tof_fleft,pins.tof_fright,pins.tof_rleft,pins.tof_rright], ["front", "rear","fleft","fright","rleft","rright"], [0x30,0x31,0x32,0x33,0x34,0x35]) ORIGINAL (commented because we don't have all the sensors)
+        self.ir_sensors = Sensors([pins.tof_front,pins.tof_rear,pins.tof_fleft,pins.tof_fright], ["front", "rear","fleft","fright"], [0x30,0x31,0x32,0x33])
         self._frontIR = self.ir_sensors.sensors["front"]
         self._fleftIR = self.ir_sensors.sensors["fleft"]
         self._frightIR = self.ir_sensors.sensors["fright"]
         self._rearIR = self.ir_sensors.sensors["rear"]
-        self._rleftIR = self.ir_sensors.sensors["rleft"]
-        self._rrightIR = self.ir_sensors.sensors["rright"]
+
+        # Sensors we don't have
+        #self._rleftIR = self.ir_sensors.sensors["rleft"]
+        #self._rrightIR = self.ir_sensors.sensors["rright"]
         sleep(0.5)
         # sometimes intial sensor readings are 0
         self._frontIR.get_distance()
         self._fleftIR.get_distance()
         self._frightIR.get_distance()
         self._rearIR.get_distance()
-        self._rleftIR.get_distance()
-        self._rrightIR.get_distance()
+
+        # Sensors we don't have
+        #self._rleftIR.get_distance()
+        #self._rrightIR.get_distance()
 
         self.heading = {Direction.W: 0, Direction.N: 90, Direction.E: 180, Direction.S: 270}
         self.cur_dir = Direction.E
@@ -144,7 +149,8 @@ class Motors:
         self.move_cells(cells)
 
     def back(self):
-        if(self._rearIR.get_distance() > 25 and self._rleftIR.get_distance()> 10 and self._rrightIR.get_distance() > 10):
+        # if(self._rearIR.get_distance() > 25 and self._rleftIR.get_distance()> 10 and self._rrightIR.get_distance() > 10): ORIGINAL (commented because we dont have rleftIR and rrightIR)
+        if(self._rearIR.get_distance() > 25):
             print("back")
             self.move_ticks(-TICKS_CELL/4, -TICKS_CELL/4)
         else:
@@ -215,11 +221,11 @@ class Motors:
             # Do appropriate corrections with IR sensors (when turning about 90 degrees left or right)
             if heading_error < -70 and heading_error > -110:
                 curr_heading = self.heading[(direction - 1) % 4]
-                self.follow_heading_till_clear(self._rrightIR, curr_heading)
+                #self.follow_heading_till_clear(self._rrightIR, curr_heading) # Commented out because we don't have this sensor
                 self.follow_heading_till_clear(self._frightIR, curr_heading, direction=-1)
             elif heading_error > 70 and heading_error < 110:
                 curr_heading = self.heading[(direction + 1) % 4]
-                self.follow_heading_till_clear(self._rleftIR, curr_heading)
+                #self.follow_heading_till_clear(self._rleftIR, curr_heading) # Commented out because we don't have this sensor
                 self.follow_heading_till_clear(self._frightIR, curr_heading, direction=-1)
 
             self.turn_to_direction(desired_heading)
