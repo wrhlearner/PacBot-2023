@@ -94,8 +94,12 @@ def evaluate_grid(grid, state, scores:dict, pellet_constant:int, ghost_constant:
     for x in range(30):
         for y in range(30):
         #set reward 
-            reward = reward_between_points(grid, (x,y), ghost_constant,
+            if grid[x][y] == I:
+                reward = 0
+            else:
+                reward = reward_between_points(grid, (x,y), ghost_constant,
                                            pellet_constant, ghosts)
+            
             scores[(x,y)] = reward
 
     #evaluate parents
@@ -182,6 +186,8 @@ def done_search(grid, goal_nodes, start, max_step_amount):
     returns True if all the nodes of a certain distance have been explored from the start position
 
     """
+    if len(goal_nodes) == 0:
+        return False
 
     # Perform BFS to walk through all nodes at distance `max_step_amount` from start
     queue = [(start, 0)] # (node, distance) 
