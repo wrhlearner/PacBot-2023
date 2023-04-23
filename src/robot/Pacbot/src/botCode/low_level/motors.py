@@ -49,6 +49,7 @@ class Motors:
         self._rrightIR.get_distance()
 
         self.heading = {Direction.W: 0, Direction.N: 90, Direction.E: 180, Direction.S: 270}
+        #sets default direction to be east
         self.cur_dir = Direction.E
 
         self.left_motor = Motor("Left", pins.motor_speed_l, pins.motor_direction_l, 0)
