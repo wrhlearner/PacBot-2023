@@ -46,8 +46,10 @@ class BasicHighLevelModule(rm.ProtoModule):
 
             # path = bfs(self.grid, p_loc, self.state, [o, O]) # ORIGINAL
             # path = bfs(self.grid, p_loc, [o, O]) # NEW
-            path = a_star(self.state, self.grid, p_loc) # NEW NEW
+            print("a")
+            path = a_star(self.state, self.grid, p_loc)[:2] # NEW NEW
             print(path)
+            print("b")
 
             if path != None:
                 next_loc = path[1]
