@@ -4,7 +4,7 @@ import os, copy
 import robomodules as rm
 from variables import *
 from grid import grid
-from search import bfs
+from search import bfs, get_ghost_positions, a_star
 from messages import MsgType, message_buffers, LightState, PacmanCommand
 
 ADDRESS = os.environ.get("LOCAL_ADDRESS","localhost")
@@ -32,7 +32,6 @@ class BasicHighLevelModule(rm.ProtoModule):
             else:
                 return PacmanCommand.WEST
 
-
     def msg_received(self, msg, msg_type):
         if msg_type == MsgType.LIGHT_STATE:
             self.state = msg
@@ -44,8 +43,10 @@ class BasicHighLevelModule(rm.ProtoModule):
             # update game state
             if self.grid[p_loc[0]][p_loc[1]] in [o, O]:
                 self.grid[p_loc[0]][p_loc[1]] = e
- 
-            path = bfs(self.grid, p_loc, self.state, [o, O])
+
+            # path = bfs(self.grid, p_loc, self.state, [o, O]) # ORIGINAL
+            path = bfs(self.grid, p_loc, [o, O]) # NEW
+            path = a_star(self.state, self.grid)
             print(path)
 
             if path != None:
