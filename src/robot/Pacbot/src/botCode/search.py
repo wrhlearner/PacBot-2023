@@ -148,20 +148,21 @@ def do_a_star(grid, scores:dict, start:tuple, max_step_amount:int, dist_constant
         neighbours = get_neighbours(grid, current_node)
 
         for n in neighbours:
-            parents[n] = current_node
-
 
             # i) if successor is the goal, stop search
             if done_search(grid, explored, start, max_step_amount):
                 #pick the best goal state
                 best_goal_state = best_nodes(scores, goal_states)
                 return parents, best_goal_state
+
             
             distance = grid_distance(grid, current_node, start)
 
             #add to goal state if past a certain set of steps from current 
             if (distance == max_step_amount):
                 goal_states.append(n)
+
+
 
             # new score is the prev score of the prev node (heuritsic and actual)
             #plus the heuristic score of the current node
