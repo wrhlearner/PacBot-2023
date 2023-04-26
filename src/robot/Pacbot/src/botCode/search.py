@@ -139,26 +139,27 @@ def do_a_star(grid, scores:dict, start:tuple, max_step_amount:int, dist_constant
         
         
         # b) pop q off the open list
-        frontier = frontier[1:]
+        frontier.remove(current_node)
   
         #c) generate successors and set their parents to q
         neighbours = get_neighbours(grid, current_node)
 
         for n in neighbours:
-            parents[n] = current_node
-
 
             # i) if successor is the goal, stop search
             if done_search(grid, explored, start, max_step_amount):
                 #pick the best goal state
                 best_goal_state = best_nodes(scores, goal_states)
                 return parents, best_goal_state
+
             
             distance = grid_distance(grid, current_node, start)
 
             #add to goal state if past a certain set of steps from current 
             if (distance == max_step_amount):
                 goal_states.append(n)
+
+
 
             # new score is the prev score of the prev node (heuritsic and actual)
             #plus the heuristic score of the current node
@@ -169,12 +170,23 @@ def do_a_star(grid, scores:dict, start:tuple, max_step_amount:int, dist_constant
             #  in the OPEN list which has alower f than successor, 
             # skip this successor
 
+
+            #if node in frontier or explored, update if value is better 
             prev_cost = distance_incl_scores.get(n, -np.inf)
-            if (new_score > prev_cost):
+
+            if (n not in frontier and n not in explored):
                 distance_incl_scores[n] = new_score
                 frontier.append(n)
-                print(frontier)
-        
+                parents[n] = current_node
+
+            elif (new_score > prev_cost and n in frontier and n not in explored):
+                frontier.remove(n)
+                distance_incl_scores[n] = new_score
+                frontier.append(n)
+                parents[n] = current_node
+
+            print(frontier)
+
         
     return parents, best_nodes(scores, goal_states)
 
