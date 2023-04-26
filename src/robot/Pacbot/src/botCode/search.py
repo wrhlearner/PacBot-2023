@@ -1,6 +1,7 @@
 from variables import *
 import copy
 import numpy as np
+import time
 
 def bfs(grid, start, target, max_dist=float("inf")):
     visited = []
@@ -68,6 +69,8 @@ def a_star(state,
     #                            ghost_constant)
 
     parents, goal = do_a_star(grid, h_scores, start, look_ahead, dist_constant)
+    print("Goal: ", goal)   
+    print(parents)
 
     #Search the next x moves for the path with the highest reward
     path = get_path(parents, goal)
@@ -122,8 +125,8 @@ def do_a_star(grid, scores:dict, start:tuple, max_step_amount:int, dist_constant
         Goal: Goal Node 
     """
 
-    frontier = [start]
-    explored = []
+    frontier = [start] #open list
+    explored = [] #closed list
     parents = {}
 
     distance_incl_scores = {}
@@ -170,7 +173,6 @@ def do_a_star(grid, scores:dict, start:tuple, max_step_amount:int, dist_constant
             #  in the OPEN list which has alower f than successor, 
             # skip this successor
 
-
             #if node in frontier or explored, update if value is better 
             prev_cost = distance_incl_scores.get(n, -np.inf)
 
@@ -178,15 +180,6 @@ def do_a_star(grid, scores:dict, start:tuple, max_step_amount:int, dist_constant
                 distance_incl_scores[n] = new_score
                 frontier.append(n)
                 parents[n] = current_node
-
-            elif (new_score > prev_cost and n in frontier and n not in explored):
-                frontier.remove(n)
-                distance_incl_scores[n] = new_score
-                frontier.append(n)
-                parents[n] = current_node
-
-            print(frontier)
-
         
     return parents, best_nodes(scores, goal_states)
 
@@ -298,7 +291,7 @@ def ghost_value(distances, constant):
 
 
 def reward_between_points(grid, a:tuple, ghost_constant:int,
-                           pellet_constant:int, ghosts:list(tuple)):
+                           pellet_constant:int, ghosts:list):
     """
     Inputs:
         grid: the grid's current state
