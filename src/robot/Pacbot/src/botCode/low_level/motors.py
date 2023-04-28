@@ -103,6 +103,29 @@ class Motors:
     
     def move_cells(self, cells):
         self.drive_straight(self.heading[self.cur_dir], cells*TICKS_CELL)
+
+    def move_cells_with_encoders(self, cells=1):
+        #move x cells just using the encoders idk 
+        #change the constant
+        self.drive_straight_just_encoders(cells*0.5)
+
+
+    def drive_straight_just_encoders(self, cells):
+        self.move_motors(MOTOR_SPEED, MOTOR_SPEED)
+        sleep(cells*1)
+        self.stop()
+    
+    def turn_left(self, angle):
+        self.move_motors(-MOTOR_SPEED, MOTOR_SPEED)
+        sleep(0.01)*angle
+        self.stop()
+
+    def turn_right(self, angle):
+        self.move_motors(MOTOR_SPEED, -MOTOR_SPEED)
+        sleep(0.1)*angle
+        self.stop()
+
+
     
     def drive_straight(self, heading, ticks):
         #print("drive straight")
@@ -213,23 +236,66 @@ class Motors:
 
 
     # function for driving in actual direction
-    def drive_in_direction(self, direction, cells):
-        desired_heading = self.heading[direction]
-        heading_error = self.compute_heading_error(self.teensy_sensors.get_heading(), desired_heading)
+    def drive_in_direction(self, direction, cells, old_direction):
+        turning = self.how_far_off(old_direction, direction)
+        if turning < 0:
+            self.turn_right(turning)
+        elif turning > 0:
+            self.turn_left(turning)
+        self.drive_straight_just_encoders(cells)
+
+        return direction
+
+
+
+    def how_far_off(old_direction, direction):
+        one = 0
+        two = 0
+        if (old_direction) == Direction.N:
+            one = 0
+        elif (old_direction) == Direction.S:
+            one = 180
+        elif (old_direction == Direction.E):
+            one = 90
+        else:
+            one = 270
         
-        # Make directional adjustment if greater than 20 degrees
-        if abs(heading_error) > 20:
-            # Do appropriate corrections with IR sensors (when turning about 90 degrees left or right)
-            if heading_error < -70 and heading_error > -110:
-                curr_heading = self.heading[(direction - 1) % 4]
-                #self.follow_heading_till_clear(self._rrightIR, curr_heading) # Commented out because we don't have this sensor
-                self.follow_heading_till_clear(self._frightIR, curr_heading, direction=-1)
-            elif heading_error > 70 and heading_error < 110:
-                curr_heading = self.heading[(direction + 1) % 4]
-                #self.follow_heading_till_clear(self._rleftIR, curr_heading) # Commented out because we don't have this sensor
-                self.follow_heading_till_clear(self._frightIR, curr_heading, direction=-1)
+        if (direction) == Direction.N:
+            two = 0
+        elif (direction) == Direction.S:
+            two = 180
+        elif (direction == Direction.E):
+            two = 90
+        else:
+            two = 270
 
-            self.turn_to_direction(desired_heading)
 
-        # Drive forward
-        self.drive_straight(desired_heading, cells*TICKS_CELL)
+        how_far_off = one - two
+
+        #negative is right
+        #positive is left
+
+        return(how_far_off)
+
+
+
+
+        # desired_heading = self.heading[direction]
+        # heading_error = self.compute_heading_error(self.teensy_sensors.get_heading(), desired_heading)
+        
+        # # Make directional adjustment if greater than 20 degrees
+        # if abs(heading_error) > 20:
+        #     # Do appropriate corrections with IR sensors (when turning about 90 degrees left or right)
+        #     if heading_error < -70 and heading_error > -110:
+        #         curr_heading = self.heading[(direction - 1) % 4]
+        #         #self.follow_heading_till_clear(self._rrightIR, curr_heading) # Commented out because we don't have this sensor
+        #         self.follow_heading_till_clear(self._frightIR, curr_heading, direction=-1)
+        #     elif heading_error > 70 and heading_error < 110:
+        #         curr_heading = self.heading[(direction + 1) % 4]
+        #         #self.follow_heading_till_clear(self._rleftIR, curr_heading) # Commented out because we don't have this sensor
+        #         self.follow_heading_till_clear(self._frightIR, curr_heading, direction=-1)
+
+        #     self.turn_to_direction(desired_heading)
+
+        # # Drive forward
+        # self.drive_straight(desired_heading, cells*TICKS_CELL)

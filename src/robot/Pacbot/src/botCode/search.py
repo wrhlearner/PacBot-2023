@@ -46,7 +46,7 @@ def a_star(state,
     """
 
     pellet_constant = 10
-    ghost_constant = 100
+    ghost_constant = -1/10
     dist_constant = 3
     look_ahead = 5
     
@@ -137,50 +137,57 @@ def do_a_star(grid, scores:dict, start:tuple, max_step_amount:int, dist_constant
     goal_states = []
 
     while len(frontier) != 0:
+        # Set current node to the node in the unvisited list with the best f-score 
         current_node = best_nodes(scores, frontier)
+
+        if done_search(grid, explored, start, max_step_amount):
+                #pick the best goal state
+                best_goal_state = best_nodes(scores, goal_states)
+                explored.append(current_node)
+
+                print("parents", parents)
+                print("best goal",  best_goal_state)
+                print("h_scores", scores)
+                print("actual scores", distance_incl_scores)
+                return parents, best_goal_state
+        
+        #remove current node from frontier 
+        frontier.remove(current_node)
+
+        #add to closed list (explored)
         explored.append(current_node)
         
-        
-        # b) pop q off the open list
-        frontier.remove(current_node)
-  
-        #c) generate successors and set their parents to q
+                #c) generate successors and set their parents to q
         neighbours = get_neighbours(grid, current_node)
 
         for n in neighbours:
 
             # i) if successor is the goal, stop search
-            if done_search(grid, explored, start, max_step_amount):
-                #pick the best goal state
-                best_goal_state = best_nodes(scores, goal_states)
-                return parents, best_goal_state
-
-            
             distance = grid_distance(grid, current_node, start)
 
             #add to goal state if past a certain set of steps from current 
             if (distance == max_step_amount):
                 goal_states.append(n)
 
-
-
             # new score is the prev score of the prev node (heuritsic and actual)
             #plus the heuristic score of the current node
             #minus one because its one more distance away
-            new_score = scores[n] + distance_incl_scores[current_node] - dist_constant
+            new_score =  distance_incl_scores[current_node] + scores[n] - dist_constant
 
-            #if a node with the same position as successor is
-            #  in the OPEN list which has alower f than successor, 
-            # skip this successor
 
-            #if node in frontier or explored, update if value is better 
             prev_cost = distance_incl_scores.get(n, -np.inf)
 
-            if (n not in frontier and n not in explored):
+            # If new g-score is more than neighbour's g-score in unvisited list:
+            if new_score > prev_cost:
+                #Update the neighbour's g-score with the new g-score
                 distance_incl_scores[n] = new_score
-                frontier.append(n)
+                #Update the neighbour's previous node to the current node
                 parents[n] = current_node
-        
+
+            
+            
+    print("parents", parents)
+    print("GOALS",  goal_states)
     return parents, best_nodes(scores, goal_states)
 
 def done_search(grid, goal_nodes, start, max_step_amount):
@@ -262,7 +269,7 @@ def ghost_value(distances, constant):
     for d in distances:
         path += d
 
-    return -constant* (60-d)
+    return -constant*np.power(e,(60-d))
 
 # def update_heuristic_values(start, last_start,
 #                 pellet_eaten, 
