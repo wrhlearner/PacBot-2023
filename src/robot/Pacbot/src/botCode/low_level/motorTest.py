@@ -18,6 +18,9 @@ def test():
     right_motor.stop()
     left_motor.stop()
 
+    #first test
+    test_drive_in_direction(Direction.N, Direction.N)
+
 def test_drive_straight():
     motors = Motors()
     motors.drive_straight(110.38, 530)
@@ -101,6 +104,10 @@ def test_drive_forward_till_clear():
 def test_drive_in_direction_north():
     motors = Motors()
     motors.drive_in_direction(Direction.N, 1)
+
+def test_drive_in_direction(direction, old_direction):
+    motors = Motors()
+    motors.drive_in_direction(direction, 1, old_direction)
 
 
 if __name__ == "__main__":
