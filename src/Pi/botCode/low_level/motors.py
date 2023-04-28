@@ -33,47 +33,47 @@ class Motors:
         sleep(2)
         
         #self.ir_sensors = Sensors([pins.tof_front,pins.tof_rear,pins.tof_fleft,pins.tof_fright,pins.tof_rleft,pins.tof_rright], ["front", "rear","fleft","fright","rleft","rright"], [0x30,0x31,0x32,0x33,0x34,0x35]) ORIGINAL (commented because we don't have all the sensors)
-        self.ir_sensors = Sensors([pins.tof_front,pins.tof_rear,pins.tof_fleft,pins.tof_fright], ["front", "rear","fleft","fright"], [0x30,0x31,0x32,0x33])
-        self._frontIR = self.ir_sensors.sensors["front"]
-        self._fleftIR = self.ir_sensors.sensors["fleft"]
-        self._frightIR = self.ir_sensors.sensors["fright"]
-        self._rearIR = self.ir_sensors.sensors["rear"]
+        # self.ir_sensors = Sensors([pins.tof_front,pins.tof_rear,pins.tof_fleft,pins.tof_fright], ["front", "rear","fleft","fright"], [0x30,0x31,0x32,0x33])
+        # self._frontIR = self.ir_sensors.sensors["front"]
+        # self._fleftIR = self.ir_sensors.sensors["fleft"]
+        # self._frightIR = self.ir_sensors.sensors["fright"]
+        # self._rearIR = self.ir_sensors.sensors["rear"]
 
         # Sensors we don't have
         #self._rleftIR = self.ir_sensors.sensors["rleft"]
         #self._rrightIR = self.ir_sensors.sensors["rright"]
-        sleep(0.5)
-        # sometimes intial sensor readings are 0
-        self._frontIR.get_distance()
-        self._fleftIR.get_distance()
-        self._frightIR.get_distance()
-        self._rearIR.get_distance()
+        # sleep(0.5)
+        # # sometimes intial sensor readings are 0
+        # self._frontIR.get_distance()
+        # self._fleftIR.get_distance()
+        # self._frightIR.get_distance()
+        # self._rearIR.get_distance()
 
         # Sensors we don't have
         #self._rleftIR.get_distance()
         #self._rrightIR.get_distance()
 
-        self.heading = {Direction.W: 0, Direction.N: 90, Direction.E: 180, Direction.S: 270}
-        #sets default direction to be east
-        self.cur_dir = Direction.E
+        # self.heading = {Direction.W: 0, Direction.N: 90, Direction.E: 180, Direction.S: 270}
+        # #sets default direction to be east
+        # self.cur_dir = Direction.E
 
         self.left_motor = Motor("Left", pins.motor_speed_l, pins.motor_direction_l, 0)
 
         self.right_motor = Motor("Right", pins.motor_speed_r, pins.motor_direction_r, 0)
 
-        self.setpointHeading = 0
-        self.inputStraight = 0
-        self.PIDHeading = PID(self.inputStraight, self.setpointHeading, KP, KI, KD, DIRECT, Timer)
-        self.PIDHeading.set_output_limits(-1*(100 - MOTOR_SPEED), 100 - MOTOR_SPEED)
-        self.PIDHeading.set_mode(AUTOMATIC)
+        # self.setpointHeading = 0
+        # self.inputStraight = 0
+        # self.PIDHeading = PID(self.inputStraight, self.setpointHeading, KP, KI, KD, DIRECT, Timer)
+        # self.PIDHeading.set_output_limits(-1*(100 - MOTOR_SPEED), 100 - MOTOR_SPEED)
+        # self.PIDHeading.set_mode(AUTOMATIC)
 
-        self.setpointTurnHeading = 0
-        self.inputTurn = 0
-        self.PIDTurn = PID(self.inputTurn, self.setpointHeading, 0.15, 0., 0.0, DIRECT, Timer)
-        self.PIDTurn.set_output_limits(-1*MOTOR_SPEED, MOTOR_SPEED)
-        self.PIDTurn.set_mode(AUTOMATIC)
+        # self.setpointTurnHeading = 0
+        # self.inputTurn = 0
+        # self.PIDTurn = PID(self.inputTurn, self.setpointHeading, 0.15, 0., 0.0, DIRECT, Timer)
+        # self.PIDTurn.set_output_limits(-1*MOTOR_SPEED, MOTOR_SPEED)
+        # self.PIDTurn.set_mode(AUTOMATIC)
 
-        self.reset_heading()
+        # self.reset_heading()
 
     def read_encoders(self):
         return self.teensy_sensors.get_left_encoder_ticks(), self.teensy_sensors.get_right_encoder_ticks()
