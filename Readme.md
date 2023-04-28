@@ -3,6 +3,7 @@
 ## **Raspberry Pi**
 username: pacbot
 password: pacbot
+Raspberry Pi IP Address: 10.206.90.144
 
 ## **Directions**
 
