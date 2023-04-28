@@ -239,7 +239,7 @@ class Motors:
     def drive_in_direction(self, direction, cells, old_direction):
         turning = self.how_far_off(old_direction, direction)
         if turning < 0:
-            self.turn_right(turning)
+            self.turn_right(abs(turning))
         elif turning > 0:
             self.turn_left(turning)
         self.drive_straight_just_encoders(cells)
