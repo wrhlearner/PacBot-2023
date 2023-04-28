@@ -248,7 +248,7 @@ class Motors:
 
 
 
-    def how_far_off(old_direction, direction):
+    def how_far_off(self, old_direction, direction):
         one = 0
         two = 0
         if (old_direction) == Direction.N:
