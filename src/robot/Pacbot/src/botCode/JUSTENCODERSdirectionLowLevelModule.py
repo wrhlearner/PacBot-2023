@@ -27,10 +27,11 @@ class LowLevelModule(rm.ProtoModule):
         self.prev_loc = None
         self.ticks = 0
         self.forwards = 0
+        self.old_direction = Direction.N
         
 
     def _move_forward(self):
-        self.motors.move_cells(1)
+        self.motors.move_cells_with_encoders(1)
 
     def _execute_command(self):
         
@@ -52,7 +53,7 @@ class LowLevelModule(rm.ProtoModule):
             else:
                 motor_dir = Direction.E
             
-            self.motors.drive_in_direction(motor_dir, 1)
+            self.old_direction = self.motors.drive_in_direction(motor_dir, 1, self.old_direction)
 
     def msg_received(self, msg, msg_type):
         if msg_type == MsgType.PACMAN_COMMAND:
