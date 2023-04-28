@@ -117,12 +117,12 @@ class Motors:
     
     def turn_left(self, angle):
         self.move_motors(-MOTOR_SPEED, MOTOR_SPEED)
-        sleep(0.01)*angle
+        sleep(0.01*angle)
         self.stop()
 
     def turn_right(self, angle):
         self.move_motors(MOTOR_SPEED, -MOTOR_SPEED)
-        sleep(0.1)*angle
+        sleep(0.1*angle)
         self.stop()
 
 
