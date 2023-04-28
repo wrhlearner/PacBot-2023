@@ -123,6 +123,10 @@ class VL6180X:
 
         # setup i2c bus and SFR address
         self.i2c = smbus.SMBus(1)
+	# wait here to avoid OSError: errno 121, I2C connection error
+	# time unit: second
+        time.sleep(1)
+
         self.address = address
         self.debug = debug
 

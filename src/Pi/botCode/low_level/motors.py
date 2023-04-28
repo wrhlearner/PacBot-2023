@@ -1,13 +1,13 @@
-from .motor import Motor, MotorDirection
-from .pins import *
-from .sensors import Sensors
-from .GPIOhelpers import *
-from .PID import *
+from motor import Motor, MotorDirection
+from pins import *
+from sensors import Sensors
+from GPIOhelpers import *
+from PID import *
 setGPIO()
 import time
 import signal, sys
 
-from .teensySensors import TeensySensors
+from teensySensors import TeensySensors
 
 from time import sleep
 

@@ -14,6 +14,7 @@ class Sensors:
             digitalWrite(pin, LOW)
         
         for i, pin in enumerate(pins_i):
+            print("Connecting to sensor",names[i],"on pin",pin,"with address",addresses[i])
             self.sensors[names[i]] = TofSensor(pin, names[i], addresses[i])
             #a = input("enter chip")
 

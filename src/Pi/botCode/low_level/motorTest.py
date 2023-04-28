@@ -1,8 +1,10 @@
-from low_level.motor import Motor, MotorDirection
-from low_level.pins import *
+from motor import Motor, MotorDirection
+from pins import *
 from time import sleep
-from low_level.motors import Motors
-from low_level.motors import Direction
+from motors import Motors
+from motors import Direction
+#from motors import *
+from teensySensors import * 
 import sys
 
 def test():
@@ -11,12 +13,15 @@ def test():
     sleep(3)
     print("Motors Initialized.\n")
     sleep(1)
+    teensy_sensor = TeensySensors()
+    #teensy_sensor.read_encoders()
     right_motor.move(MotorDirection.FORWARD, 10)
     left_motor.move(MotorDirection.FORWARD, 10)
-    
+    #test_turn_left() 
     sleep(5)
     right_motor.stop()
     left_motor.stop()
+    
 
 def test_drive_straight():
     motors = Motors()
