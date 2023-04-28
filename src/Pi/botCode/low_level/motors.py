@@ -29,8 +29,8 @@ class Direction():
 
 class Motors:
     def __init__(self):
-        self.teensy_sensors = TeensySensors()
-        sleep(2)
+        # self.teensy_sensors = TeensySensors()
+        # sleep(2)
         
         #self.ir_sensors = Sensors([pins.tof_front,pins.tof_rear,pins.tof_fleft,pins.tof_fright,pins.tof_rleft,pins.tof_rright], ["front", "rear","fleft","fright","rleft","rright"], [0x30,0x31,0x32,0x33,0x34,0x35]) ORIGINAL (commented because we don't have all the sensors)
         # self.ir_sensors = Sensors([pins.tof_front,pins.tof_rear,pins.tof_fleft,pins.tof_fright], ["front", "rear","fleft","fright"], [0x30,0x31,0x32,0x33])
