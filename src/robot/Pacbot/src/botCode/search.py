@@ -184,9 +184,11 @@ def do_a_star(grid, scores:dict, start:tuple, max_step_amount:int, dist_constant
 
             prev_cost = distance_incl_scores.get(n, -np.inf)
 
-            if (n not in frontier and n not in explored):
+            # If new g-score is more than neighbour's g-score in unvisited list:
+            if new_score > prev_cost:
+                #Update the neighbour's g-score with the new g-score
                 distance_incl_scores[n] = new_score
-                frontier.append(n)
+                #Update the neighbour's previous node to the current node
                 parents[n] = current_node
 
             
