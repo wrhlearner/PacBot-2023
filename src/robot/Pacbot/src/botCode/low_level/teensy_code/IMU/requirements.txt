@@ -1,2 +1,0 @@
-Adafruit BNO055
-Adafruit BusIO
