@@ -47,7 +47,7 @@ def a_star(state,
         Path: list of nodes [(x,y), (x,y)]
     """
 
-    pellet_constant = 100
+    pellet_constant = 10
     ghost_constant = 0.1
     dist_constant = 3
     look_ahead = 5
@@ -271,11 +271,10 @@ def ghost_value(distances, constant):
         int: Sum of all ghost values 
     NOTE: Edit this if we are having issues with heuristic, because it should be explonential probably
     """
-    path = 0
-    for d in distances:
-        path += d
+    
 
-    return -constant*np.power(np.e, (60-d))
+    return -constant*(np.power(np.e, (60-distances[0])) + np.power(np.e, (60-distances[1])) + 
+                      np.power(np.e, (60-distances[2])) + np.power(np.e, (60-distances[3])))
 
 # def update_heuristic_values(start, last_start,
 #                 pellet_eaten, 
