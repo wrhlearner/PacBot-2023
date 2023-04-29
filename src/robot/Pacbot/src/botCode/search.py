@@ -3,6 +3,8 @@ import copy
 import numpy as np
 import time
 
+WALKABLE_TILES = [(1, 1), (1, 2), (1, 3), (1, 4), (1, 7), (1, 8), (1, 9), (1, 10), (1, 22), (1, 23), (1, 24), (1, 25), (1, 26), (1, 27), (1, 28), (1, 29), (2, 1), (2, 4), (2, 7), (2, 10), (2, 22), (2, 25), (2, 29), (3, 1), (3, 4), (3, 5), (3, 6), (3, 7), (3, 10), (3, 22), (3, 25), (3, 29), (4, 1), (4, 4), (4, 10), (4, 22), (4, 25), (4, 29), (5, 1), (5, 4), (5, 10), (5, 22), (5, 25), (5, 29), (6, 1), (6, 4), (6, 5), (6, 6), (6, 7), (6, 8), (6, 9), (6, 10), (6, 11), (6, 12), (6, 13), (6, 14), (6, 15), (6, 16), (6, 17), (6, 18), (6, 19), (6, 20), (6, 21), (6, 22), (6, 23), (6, 24), (6, 25), (6, 26), (6, 27), (6, 28), (6, 29), (7, 1), (7, 7), (7, 10), (7, 16), (7, 25), (7, 29), (8, 1), (8, 7), (8, 10), (8, 16), (8, 25), (8, 29), (9, 1), (9, 4), (9, 5), (9, 6), (9, 7), (9, 10), (9, 11), (9, 12), (9, 13), (9, 14), (9, 15), (9, 16), (9, 17), (9, 18), (9, 19), (9, 22), (9, 23), (9, 24), (9, 25), (9, 29), (10, 1), (10, 4), (10, 7), (10, 10), (10, 13), (10, 19), (10, 22), (10, 25), (10, 29), (11, 1), (11, 4), (11, 7), (11, 10), (11, 13), (11, 19), (11, 22), (11, 25), (11, 29), (12, 1), (12, 2), (12, 3), (12, 4), (12, 7), (12, 8), (12, 9), (12, 10), (12, 13), (12, 19), (12, 20), (12, 21), (12, 22), (12, 25), (12, 26), (12, 27), (12, 28), (12, 29), (13, 1), (13, 7), (13, 13), (13, 19), (13, 25), (14, 1), (14, 7), (14, 13), (14, 19), (14, 25), (15, 1), (15, 2), (15, 3), (15, 4), (15, 7), (15, 8), (15, 9), (15, 10), (15, 13), (15, 19), (15, 20), (15, 21), (15, 22), (15, 25), (15, 26), (15, 27), (15, 28), (15, 29), (16, 1), (16, 4), (16, 7), (16, 10), (16, 13), (16, 19), (16, 22), (16, 25), (16, 29), (17, 1), (17, 4), (17, 7), (17, 10), (17, 13), (17, 19), (17, 22), (17, 25), (17, 29), (18, 1), (18, 4), (18, 5), (18, 6), (18, 7), (18, 10), (18, 11), (18, 12), (18, 13), (18, 14), (18, 15), (18, 16), (18, 17), (18, 18), (18, 19), (18, 22), (18, 23), (18, 24), (18, 25), (18, 29), (19, 1), (19, 7), (19, 10), (19, 16), (19, 25), (19, 29), (20, 1), (20, 7), (20, 10), (20, 16), (20, 25), (20, 29), (21, 1), (21, 4), (21, 5), (21, 6), (21, 7), (21, 8), (21, 9), (21, 10), (21, 11), (21, 12), (21, 13), (21, 14), (21, 15), (21, 16), (21, 17), (21, 18), (21, 19), (21, 20), (21, 21), (21, 22), (21, 23), (21, 24), (21, 25), (21, 26), (21, 27), (21, 28), (21, 29), (22, 1), (22, 4), (22, 10), (22, 22), (22, 25), (22, 29), (23, 1), (23, 4), (23, 10), (23, 22), (23, 25), (23, 29), (24, 1), (24, 4), (24, 5), (24, 6), (24, 7), (24, 10), (24, 22), (24, 25), (24, 29), (25, 1), (25, 4), (25, 7), (25, 10), (25, 22), (25, 25), (25, 29), (26, 1), (26, 2), (26, 3), (26, 4), (26, 7), (26, 8), (26, 9), (26, 10), (26, 22), (26, 23), (26, 24), (26, 25), (26, 26), (26, 27), (26, 28), (26, 29)]
+
 def bfs(grid, start, target, max_dist=float("inf")):
     visited = []
     queue = [(start, [])]
@@ -45,20 +47,23 @@ def a_star(state,
         Path: list of nodes [(x,y), (x,y)]
     """
 
-    pellet_constant = 10
-    ghost_constant = 100
+    pellet_constant = 100
+    ghost_constant = 0.1
     dist_constant = 3
     look_ahead = 5
     
     # if current_path == None:
         # first every node gets assigned a value based on pellet score and distance from ghost
         # they also get assigmed a parent
+    time_before_evaluate_grid = time.time()
     h_scores = evaluate_grid(
                         grid, 
                         state,
                         {}, 
                         pellet_constant, 
                         ghost_constant)
+    print("Evaulate grid time: ", time.time() - time_before_evaluate_grid)
+
     # else:
     #     h_scores = update_heuristic_values(start, last_start,
     #                            pellet_eaten, 
@@ -68,9 +73,11 @@ def a_star(state,
     #                            pellet_value, 
     #                            ghost_constant)
 
+    time_before_a_star = time.time()
     parents, goal = do_a_star(grid, h_scores, start, look_ahead, dist_constant)
-    print("Goal: ", goal)   
-    print(parents)
+    print("A star time: ", time.time() - time_before_a_star)
+    #print("Goal: ", goal)   
+    #print(parents)
 
     #Search the next x moves for the path with the highest reward
     path = get_path(parents, goal)
@@ -97,8 +104,7 @@ def evaluate_grid(grid, state, scores:dict, pellet_constant:int, ghost_constant:
     for x in range(28):
         for y in range(30):
 
-            if grid[x][y] == I or grid[x][y] == e or grid[x][y] == n:
-
+            if (x,y) not in WALKABLE_TILES:
                 reward = 0
             else:
                 reward = reward_between_points(grid, (x,y), ghost_constant,
@@ -137,26 +143,33 @@ def do_a_star(grid, scores:dict, start:tuple, max_step_amount:int, dist_constant
     goal_states = []
 
     while len(frontier) != 0:
+        # Set current node to the node in the unvisited list with the best f-score 
         current_node = best_nodes(scores, frontier)
+
+        if done_search(grid, explored, start, max_step_amount):
+                #pick the best goal state
+                best_goal_state = best_nodes(scores, goal_states)
+                explored.append(current_node)
+
+                '''print("parents", parents)
+                print("best goal",  best_goal_state)
+                print("h_scores", scores)
+                print("actual scores", distance_incl_scores)
+                print(distance_incl_scores)'''
+                return parents, best_goal_state
+        
+        #remove current node from frontier 
+        frontier.remove(current_node)
+
+        #add to closed list (explored)
         explored.append(current_node)
         
-        
-        # b) pop q off the open list
-        frontier.remove(current_node)
-  
-        #c) generate successors and set their parents to q
+                #c) generate successors and set their parents to q
         neighbours = get_neighbours(grid, current_node)
 
         for n in neighbours:
-            parents[n] = current_node
-
 
             # i) if successor is the goal, stop search
-            if done_search(grid, explored, start, max_step_amount):
-                #pick the best goal state
-                best_goal_state = best_nodes(scores, goal_states)
-                return parents, best_goal_state
-            
             distance = grid_distance(grid, current_node, start)
 
             #add to goal state if past a certain set of steps from current 
@@ -166,20 +179,21 @@ def do_a_star(grid, scores:dict, start:tuple, max_step_amount:int, dist_constant
             # new score is the prev score of the prev node (heuritsic and actual)
             #plus the heuristic score of the current node
             #minus one because its one more distance away
-            new_score = scores[n] + distance_incl_scores[current_node] - dist_constant
+            new_score =  distance_incl_scores[current_node] + scores[n] - dist_constant
 
-            #if a node with the same position as successor is
-            #  in the OPEN list which has alower f than successor, 
-            # skip this successor
 
-            #if node in frontier or explored, update if value is better 
             prev_cost = distance_incl_scores.get(n, -np.inf)
 
             if (n not in frontier and n not in explored):
                 distance_incl_scores[n] = new_score
                 frontier.append(n)
                 parents[n] = current_node
-        
+
+            
+            
+    #print("parents", parents)
+    #print("GOALS",  goal_states)
+    #print(distance_incl_scores)
     return parents, best_nodes(scores, goal_states)
 
 def done_search(grid, goal_nodes, start, max_step_amount):
@@ -261,7 +275,7 @@ def ghost_value(distances, constant):
     for d in distances:
         path += d
 
-    return -constant* (60-d)
+    return -constant*np.power(np.e, (60-d))
 
 # def update_heuristic_values(start, last_start,
 #                 pellet_eaten, 
@@ -310,8 +324,10 @@ def reward_between_points(grid, a:tuple, ghost_constant:int,
             distance = grid_distance(grid, a, g)
         ghost_distances.append(distance)
     val = ghost_value(ghost_distances, ghost_constant)
+
     if has_pellet(grid, a):
         val += pellet_constant
+
     return val 
 
 
@@ -343,11 +359,11 @@ def best_nodes(scores, visited):
         max_node: node (x,y) that has biggest value in the visited
     
     """
-    max_val = np.inf
+    max_val = -np.inf
     max_node = visited[0]
     for node in visited:
         val = scores[node]
-        if val < max_val:
+        if val > max_val:
             max_node = node
             max_val = val
     return max_node
