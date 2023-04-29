@@ -29,6 +29,7 @@ class HighToLowTest(rm.ProtoModule):
 
     def tick(self):
         if self.state and self.state.mode == LightState.RUNNING:
+            print("running and ticking tic tic ")
             self._send_command_message_to_target(PacmanCommand.NORTH)
             self._send_command_message_to_target(PacmanCommand.NORTH)
             self._send_command_message_to_target(PacmanCommand.EAST)
