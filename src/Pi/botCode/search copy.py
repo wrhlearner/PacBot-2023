@@ -61,20 +61,20 @@ def a_star(state,
         last_start = start
         ghost_nodes_past = ghost_locations
     
-    # if current_path == None:
+    if current_path == None:
         # first every node gets assigned a value based on pellet score and distance from ghost
         # they also get assigmed a parent
-    h_scores = evaluate_grid(
+        h_scores = evaluate_grid(
                         grid, 
                         ghost_locations,
                         {}, 
                         pellet_constant, 
                         ghost_constant)
-    # else:
-    #     h_scores = update_heuristic_values(start, last_start,
-    #                 pellet_eaten, ghost_nodes_past, 
-    #                 ghost_locations, h_scores, 
-    #                 pellet_constant, ghost_constant)
+    else:
+        h_scores = update_heuristic_values(start, last_start,
+                    pellet_eaten, ghost_nodes_past, 
+                    ghost_locations, h_scores, 
+                    pellet_constant, ghost_constant)
 
 
     # time_before_a_star = time.time()
@@ -310,9 +310,33 @@ def update_heuristic_values(start, last_start,
         ghost_old = ghost_nodes_past[i]
         ghost_current = ghost_node_current[i]
 
-        x_diff = ghost_old[0]-ghost_current[0]
-        y_diff = ghost_old[1]-ghost_current[1]
+        x_diff = ghost_old[0]-ghost_current[0] #positive if going left 
+        y_diff = ghost_old[1]-ghost_current[1] #positive if going up
+
+
         
+        for i in WALKABLE_TILES:
+            if y_diff > 0 : #going up
+                if i[1] >= ghost_old[1]:
+                    i[1] = i[1] +1
+                else:
+                    i[1] = i[1] - 1 
+            elif y_diff < 0: #going down
+                if i[1] > ghost_old[1]:
+                    i[1]  = i[1] - 1
+                else:
+                    i[1] = i[1] + 1
+            if x_diff > 0: #left
+
+
+            
+
+                    
+
+
+        
+
+
 
 
 

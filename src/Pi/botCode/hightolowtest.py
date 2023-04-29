@@ -52,6 +52,11 @@ class HighToLowTest(rm.ProtoModule):
             print("W")
         self.write(new_msg.SerializeToString(), MsgType.PACMAN_COMMAND)
 
+    def _send_stop_command(self):
+        new_msg = PacmanCommand()
+        new_msg.dir = PacmanCommand.STOP
+        self.write(new_msg.SerializeToString(), MsgType.PACMAN_COMMAND)
+
 
 
 def main():
