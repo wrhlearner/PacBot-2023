@@ -4,15 +4,11 @@ import os, copy
 import robomodules as rm
 from variables import *
 from grid import grid
-<<<<<<< HEAD:src/Pi/botCode/basicHighLevelModule.py
-<<<<<<< HEAD:src/robot/Pacbot/src/botCode/basicHighLevelModule.py
+
 from search import bfs, a_star
-=======
 from search import bfs, get_ghost_positions, a_star
->>>>>>> b9b006c508fcd1ed6283ec3dbfd85ab310cabe64:src/Pi/botCode/basicHighLevelModule.py
-=======
+
 from search import bfs, a_star, get_ghost_locations, grid_distance
->>>>>>> cd6bae55ff1f96504e4af961364eb4339b3e8f64:src/robot/Pacbot/src/botCode/basicHighLevelModule.py
 from messages import MsgType, message_buffers, LightState, PacmanCommand
 from time import sleep
 
@@ -55,22 +51,15 @@ class BasicHighLevelModule(rm.ProtoModule):
                 self.grid[p_loc[0]][p_loc[1]] = e
 
             # path = bfs(self.grid, p_loc, self.state, [o, O]) # ORIGINAL
-<<<<<<< HEAD:src/Pi/botCode/basicHighLevelModule.py
-<<<<<<< HEAD:src/robot/Pacbot/src/botCode/basicHighLevelModule.py
             # path = bfs(self.grid, p_loc, [o, O]) # NEW
             print("a")
             path = a_star(self.state, self.grid, p_loc)[:2] # NEW NEW
-=======
-            path = bfs(self.grid, p_loc, [o, O]) # NEW
-            path = a_star(self.state, self.grid)
->>>>>>> b9b006c508fcd1ed6283ec3dbfd85ab310cabe64:src/Pi/botCode/basicHighLevelModule.py
+            # path = a_star(self.state, self.grid)
             print(path)
-            print("b")
-=======
+            # print("b")
             #path = bfs(self.grid, p_loc, [o, O]) # NEW
             if len(self.pathQueue) < 1:
                 self.pathQueue = a_star(self.state, self.grid, p_loc)[1:] # NEW NEW
->>>>>>> cd6bae55ff1f96504e4af961364eb4339b3e8f64:src/robot/Pacbot/src/botCode/basicHighLevelModule.py
 
             # print("bfs", path_bfs)
 
