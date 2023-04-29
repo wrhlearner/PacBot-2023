@@ -13,13 +13,13 @@ PORT = os.environ.get("LOCAL_PORT", 11295)
 
 FREQUENCY = 60
 
+
 class BasicHighLevelModule(rm.ProtoModule):
     def __init__(self, addr, port):
         self.subscriptions = [MsgType.LIGHT_STATE]
         super().__init__(addr, port, message_buffers, MsgType, FREQUENCY, self.subscriptions)
         self.state = None
         self.grid = copy.deepcopy(grid)
-        self.pathQueue = []
 
     def _get_direction(self, p_loc, next_loc):
         if p_loc[0] == next_loc[0]:
@@ -49,6 +49,7 @@ class BasicHighLevelModule(rm.ProtoModule):
             # path = bfs(self.grid, p_loc, self.state, [o, O]) # ORIGINAL
             #path = bfs(self.grid, p_loc, [o, O]) # NEW
             path = a_star(self.state, self.grid, p_loc) # NEW NEW
+            print(path)
 
             # print("bfs", path_bfs)
 
